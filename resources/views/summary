@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Ringkasan Transaksi</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f4f4f4;
+            padding: 30px;
+        }
+        .container {
+            background: white;
+            padding: 25px;
+            max-width: 700px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        h2, .total {
+            text-align: center;
+        }
+        .total {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .kode-inv {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Ringkasan Pembayaran</h2>
+
+        @if ($transaksi)
+            <p><strong>Kode Invoice:</strong> <span class="kode-inv">{{ $transaksi->kode }}</span></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama Produk</th>
+                        <th>Jenis</th>
+                        <th>Jumlah</th>
+                        <th>Total Harga</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($detailTransaksi as $item)
+                        <tr>
+                            <td>
+                                @if ($item->tipe_produk === 'makanan')
+                                    {{ $item->makanan->name ?? '-' }}
+                                @else
+                                    {{ $item->minuman->name ?? '-' }}
+                                @endif
+                            </td>
+                            <td>{{ ucfirst($item->tipe_produk) }}</td>
+                            <td>{{ $item->qty }}</td>
+                            <td>Rp{{ number_format($item->total_harga, 0, ',', '.') }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
+            <div class="total">
+                Total Pembayaran: Rp{{ number_format($transaksi->totalharga, 0, ',', '.') }}
+            </div>
+        @else
+            <p>Transaksi tidak ditemukan.</p>
+        @endif
+    </div>
+</body>
+</html>
